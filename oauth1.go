@@ -94,7 +94,7 @@ func GetParams(r *http.Request) (result Params) {
 	if authHeader != "" {
 		if match := headerReg.FindStringSubmatch(authHeader); match != nil {
 			for _, part := range strings.Split(match[1], ",") {
-				kv := strings.Split(part, "=")
+				kv := strings.SplitN(part, "=", 2)
 				key := strings.TrimSpace(kv[0])
 				value := strings.TrimSpace(kv[1])
 				value = strings.Replace(value, `"`, "", -1) // No fnuts for you
