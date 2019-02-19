@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"regexp"
 	"sort"
 	"strconv"
@@ -76,6 +77,15 @@ func Encode(s string) string {
 	return enc
 }
 
+func decode(s string) string {
+	dec, err := url.QueryUnescape(s)
+	if err != nil {
+		return s
+	}
+
+	return dec
+}
+
 var headerReg = regexp.MustCompile("^(?i)oauth\\s*(.*=.*(,.*=.*)*)$")
 
 func GetParams(r *http.Request) (result Params) {
@@ -98,7 +108,7 @@ func GetParams(r *http.Request) (result Params) {
 				key := strings.TrimSpace(kv[0])
 				value := strings.TrimSpace(kv[1])
 				value = strings.Replace(value, `"`, "", -1) // No fnuts for you
-				params.Add(&Pair{Key: key, Value: value})
+				params.Add(&Pair{Key: key, Value: decode(value)})
 			}
 		}
 	}
